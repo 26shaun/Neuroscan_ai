@@ -308,14 +308,5 @@ This project is intended for research and educational purposes only. It must not
 - Exportable per-patient screening report
 - Automated tests for upload validation and the prediction endpoint
 - Containerised deployment
-
-## Contributors
-
-- [Add Team Member Name]
-- [Add Team Member Name]
-- [Add Team Member Name]
-
-## License
-
-[Add License]#   N e u r o s c a n i _ a i  
+ 
  
