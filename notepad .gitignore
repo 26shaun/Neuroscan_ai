@@ -1,0 +1,14 @@
+@"
+venv/
+.venv/
+__pycache__/
+*.pyc
+.env
+.vscode/
+.idea/
+.DS_Store
+model/*
+!model/.gitkeep
+!model/README.md
+"@ | Set-Content -Path .gitignore -Encoding ascii
+git check-ignore -v venv/Lib

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NeuroScan AI &ndash; Brain MRI Screening</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-row">
+      <h1 class="brand">NeuroScan AI</h1>
+      <p class="tagline">Brain MRI triage screening: glioma, meningioma, pituitary tumor, or no tumor</p>
+    </div>
+  </header>
+
+  <div class="notice-bar" role="note">
+    Experimental screening prototype &ndash; specialist review required
+  </div>
+
+  <main class="wrap">
+    <ol class="workflow" aria-label="Screening workflow">
+      <li><strong>Upload</strong><span>JPEG or PNG axial, coronal, or sagittal slice, up to 5 MB</span></li>
+      <li><strong>Analyze</strong><span>Each scan is decoded in memory and classified separately by MobileNetV2</span></li>
+      <li><strong>Review</strong><span>Per-patient class probabilities, confidence, and Grad-CAM heatmap</span></li>
+      <li><strong>Refer</strong><span>All findings go to a radiologist or neurosurgeon</span></li>
+    </ol>
+
+    <div class="grid">
+      <section class="panel" aria-labelledby="upload-title">
+        <h2 id="upload-title">Scan upload</h2>
+
+        <div id="dropzone" class="dropzone" role="button" tabindex="0"
+             aria-describedby="dropzone-help" aria-label="Select or drop brain MRI images">
+          <input id="file-input" type="file" accept="image/jpeg,image/png" multiple hidden>
+          <div class="dropzone-empty">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>
+            </svg>
+            <p class="dropzone-title">Drop MRI images here, or select files</p>
+            <p id="dropzone-help" class="muted">One image per patient. JPEG or PNG, up to 5 MB each, maximum 20 scans per session.</p>
+          </div>
+        </div>
+        <p id="scan-count" class="muted small" aria-live="polite">No scans selected.</p>
+
+        <p id="error" class="error" role="alert" hidden></p>
+
+        <div class="actions">
+          <button id="analyze-btn" class="btn btn-primary" type="button" disabled>Analyze scans</button>
+          <button id="reset-btn" class="btn btn-secondary" type="button" disabled>Clear all</button>
+        </div>
+
+        <dl class="privacy">
+          <dt>Data handling</dt>
+          <dd>The image is processed in server memory for this request only. It is not saved to disk or a database.</dd>
+        </dl>
+      </section>
+
+      <section class="panel results" aria-labelledby="results-title" aria-live="polite">
+        <h2 id="results-title">Scans and screening results</h2>
+
+        <div id="loading" class="loading" hidden>
+          <div class="spinner" aria-hidden="true"></div>
+          <p>Running inference on each scan&hellip;</p>
+        </div>
+
+        <div id="results-empty" class="results-empty">
+          <p>No scans added yet. Add one MRI image per patient and select <em>Analyze scans</em>. Each scan is analyzed independently and gets its own result.</p>
+        </div>
+
+        <ul id="scan-list" class="scan-list"></ul>
+
+        <div id="referral" class="referral" role="note" hidden>
+          <strong>Clinical referral notice</strong>
+          <p>Experimental screening prototype &ndash; specialist review required. These outputs are not diagnoses and must not replace review by a qualified radiologist or neurosurgeon.</p>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel stats" aria-labelledby="stats-title">
+      <h2 id="stats-title">Session triage summary</h2>
+      <dl class="stats-grid">
+        <div><dt>Scans screened</dt><dd id="stat-total">0</dd></div>
+        <div><dt>Flagged for specialist review</dt><dd id="stat-flagged">0</dd></div>
+        <div><dt>No tumor predicted</dt><dd id="stat-clear">0</dd></div>
+        <div><dt>Last batch time</dt><dd id="stat-latency">&ndash;</dd></div>
+      </dl>
+      <p class="muted small">Counts reset when this page is reloaded and are never sent to a server. Every result, including "No tumor", still requires specialist review.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Model: MobileNetV2 fine-tuned on the BRISC brain MRI dataset. Input resolution 224 &times; 224. Output: 4-class softmax. Research and demonstration use only.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
